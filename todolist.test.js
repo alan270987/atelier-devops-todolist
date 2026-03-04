@@ -1,3 +1,4 @@
+// Test avec protection de branche - Sprint 6
 // Une fonction simple pour tester
 function ajouterTache(tache) {
     if (!tache) return false;
