@@ -1,10 +1,6 @@
-name: CI - Tests
+name: CI - Tests et SonarCloud
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -12,19 +8,22 @@ jobs:
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v3
-        
+        with:
+          fetch-depth: 0
+
       - name: Utiliser Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Installer les dépendances
-        run: |
-          npm install
-          npm install --save-dev jest
-          
-      - name: Vérifier l'installation
-        run: npx jest --version
-        
-      - name: Lancer les tests
-        run: npm test
+        run: npm install
+
+      - name: Lancer les tests avec couverture
+        run: npm test -- --coverage
+
+      - name: Analyser avec SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
